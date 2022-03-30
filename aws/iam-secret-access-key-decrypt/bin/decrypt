@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -e
+
+secret=`jq -r .secret | base64 --decode | keybase pgp decrypt`
+
+jq -n --arg secret "${secret}" '{"secret":$secret}'

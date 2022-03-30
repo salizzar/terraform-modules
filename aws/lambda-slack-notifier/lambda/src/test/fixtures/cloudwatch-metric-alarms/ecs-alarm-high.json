@@ -1,0 +1,22 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "EventSubscriptionArn": "arn:aws:sns:us-east-1:123456789012:slack-notifier:c455163c-446b-4dbd-8aa3-d8507b004d07",
+      "Sns": {
+        "Type": "Notification",
+        "MessageId": "afa30c77-d3f7-5e74-bd64-58b57f127102",
+        "TopicArn": "arn:aws:sns:us-east-1:123456789012:slack-notifier",
+        "Subject": "ALARM: \"my-app_cpu_high\" in US East (N. Virginia)",
+        "Message": "{\"AlarmName\":\"my-app_cpu_high\",\"AlarmDescription\":null,\"AWSAccountId\":\"123456789012\",\"NewStateValue\":\"ALARM\",\"NewStateReason\":\"Threshold Crossed: 2 datapoints [99.88207280990586 (23/01/19 17:54:00), 99.8517532035918 (23/01/19 17:53:00)] were greater than or equal to the threshold (80.0).\",\"StateChangeTime\":\"2019-01-23T17:55:48.890+0000\",\"Region\":\"US East (N. Virginia)\",\"OldStateValue\":\"OK\",\"Trigger\":{\"MetricName\":\"CPUUtilization\",\"Namespace\":\"AWS/ECS\",\"StatisticType\":\"Statistic\",\"Statistic\":\"AVERAGE\",\"Unit\":null,\"Dimensions\":[{\"value\":\"my-app\",\"name\":\"ServiceName\"},{\"value\":\"workco-cluster\",\"name\":\"ClusterName\"}],\"Period\":60,\"EvaluationPeriods\":2,\"ComparisonOperator\":\"GreaterThanOrEqualToThreshold\",\"Threshold\":80.0,\"TreatMissingData\":\"\",\"EvaluateLowSampleCountPercentile\":\"\"}}",
+        "Timestamp": "2019-01-23T17:55:49.037Z",
+        "SignatureVersion": "1",
+        "Signature": "TDJkppJrQD5ghTHFIeQjorcKb+FkAQesNE7OlBcjduNt6RFMdKql821XLbBtmBgMJ+srFfZDfAW1zk4ZCVireVs/bwd+SmrOmHh3oSud4RoV652eJnp/oE78Qozy0VyskzUOB1oM6Gi9AWY0KM7YJB7ltXkeupN1r1L3e4D+P++L4JjOsgDsjM7CMLEvgNHU1+fyC/RoCeTeYSyBoocs1QVKRdPHKUZkOvQPlAN73h/tv33mFs+8wcAETQDBvZvBjrjmOfi57/Gkyywhd6gZyiniuVAVi55akQxqfTEJusbsZLON4wG5R3APDG1c2eRQX6qa4kJy8S4yCyJpGEluNg==",
+        "SigningCertUrl": "https://sns.us-east-1.amazonaws.com/SimpleNotificationService-ac565b8b1a6c5d002d285f9598aa1d9b.pem",
+        "UnsubscribeUrl": "https://sns.us-east-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-1:123456789012:slack-notifier:c455163c-446b-4dbd-8aa3-d8507b004d07",
+        "MessageAttributes": {}
+      }
+    }
+  ]
+}

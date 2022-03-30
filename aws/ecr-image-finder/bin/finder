@@ -1,0 +1,17 @@
+#! /usr/bin/env bash
+
+QUERY=`echo $(</dev/stdin)`
+PROFILE=`echo $QUERY | jq -r .aws_profile`
+ECR_REPOSITORY=`echo $QUERY | jq -r .ecr_repository`
+ECR_IMAGE_ID=`echo $QUERY | jq -r .ecr_image_id`
+
+[[ "$PROFILE" != "" ]] && AWS_PROFILE_ARGS="--profile $PROFILE" || AWS_PROFILE_ARGS=""
+
+ECR_REPO_IMAGE=`aws ecr list-images --repository-name $ECR_REPOSITORY $AWS_PROFILE_ARGS | jq -r ".imageIds[] | select(.imageTag==\"$ECR_IMAGE_ID\")"`
+
+if [[ -z $ECR_REPO_IMAGE ]] ; then
+  echo '{"error": "image not found"}' 1>&2
+  exit 1
+fi
+
+jq -n --arg ecr_repo_image "$ECR_REPO_IMAGE" '{"ecr_repo_image":$ecr_repo_image}'

@@ -1,0 +1,24 @@
+#! /usr/bin/env bash
+
+set -xe
+
+
+# IMPORTANT:
+# when this script is invoked, the current path is not accessible in a easy way...
+# so you need to access the cdk source code folder by this form
+# instead of ../src
+
+CDK_PATH="`pwd`/`dirname $0`/../src"
+
+
+cd $CDK_PATH && npm install > /dev/null 2>&1
+
+CDK_OUTPUT=`cdk synth`
+EXIT_CODE=$?
+
+if [[ $EXIT_CODE -ne 0 ]] ; then
+  jq -n --arg cdk_output "$CDK_OUTPUT" '{"error":$cdk_output}' 1>&2
+  exit 1
+fi
+
+jq -n --arg cdk_output "$CDK_OUTPUT" '{"cloudformation_template":$cdk_output}'

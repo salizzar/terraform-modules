@@ -1,0 +1,22 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "EventSubscriptionArn": "arn:aws:sns:us-east-1:123456789012:workco-fargate_slack-notifier_production:c455163c-446b-4dbd-8aa3-d8507b004d07",
+      "Sns": {
+        "Type": "Notification",
+        "MessageId": "2363c049-6918-54bc-821b-948a8929a0b1",
+        "TopicArn": "arn:aws:sns:us-east-1:123456789012:workco-fargate_slack-notifier_production",
+        "Subject": null,
+        "Message": "{\"version\":\"0\",\"id\":\"88c7bde3-5a11-6389-f007-1b1b9a9cb2a2\",\"detail-type\":\"ECS Task State Change\",\"source\":\"aws.ecs\",\"account\":\"123456789012\",\"time\":\"2019-01-24T15:46:57Z\",\"region\":\"us-east-1\",\"resources\":[\"arn:aws:ecs:us-east-1:123456789012:task/644b460c-589a-4e85-9aca-2a34947dd05b\"],\"detail\":{\"clusterArn\":\"arn:aws:ecs:us-east-1:123456789012:cluster/workco-cluster\",\"containers\":[{\"containerArn\":\"arn:aws:ecs:us-east-1:123456789012:container/e521ac6b-d5d8-4267-99ab-61aa5f1a6bd3\",\"lastStatus\":\"PENDING\",\"name\":\"my-app\",\"taskArn\":\"arn:aws:ecs:us-east-1:123456789012:task/644b460c-589a-4e85-9aca-2a34947dd05b\",\"networkInterfaces\":[{\"attachmentId\":\"56989362-a800-406c-884e-30e9c7cb3dec\",\"privateIpv4Address\":\"172.30.27.80\"}],\"cpu\":\"0\"}],\"createdAt\":\"2019-01-24T15:46:43.551Z\",\"launchType\":\"FARGATE\",\"cpu\":\"512\",\"memory\":\"1024\",\"desiredStatus\":\"RUNNING\",\"group\":\"service:my-app\",\"lastStatus\":\"PENDING\",\"overrides\":{\"containerOverrides\":[{\"name\":\"my-app\"}]},\"attachments\":[{\"id\":\"56989362-a800-406c-884e-30e9c7cb3dec\",\"type\":\"eni\",\"status\":\"ATTACHED\",\"details\":[{\"name\":\"subnetId\",\"value\":\"subnet-0cee0777f5e5699da\"},{\"name\":\"networkInterfaceId\",\"value\":\"eni-0cfabf7a2f4b43e69\"},{\"name\":\"macAddress\",\"value\":\"0e:e1:79:58:85:d6\"},{\"name\":\"privateIPv4Address\",\"value\":\"172.30.27.80\"}]}],\"startedBy\":\"ecs-svc/9223370488509996173\",\"updatedAt\":\"2019-01-24T15:46:57.488Z\",\"taskArn\":\"arn:aws:ecs:us-east-1:123456789012:task/644b460c-589a-4e85-9aca-2a34947dd05b\",\"taskDefinitionArn\":\"arn:aws:ecs:us-east-1:123456789012:task-definition/my-app:9\",\"version\":2,\"platformVersion\":\"1.3.0\"}}",
+        "Timestamp": "2019-01-24T15:46:57.994Z",
+        "SignatureVersion": "1",
+        "Signature": "MjjSGoFgc7QA+1YCzAmJK9v6cUa5lazQaSv1kUHo8qUfTP/xjYjtgg93msd97a3zd8aCgSnauGKpnGz1EL1M5o8ZrBGquZGXbjgu/wPOHd9JsUOOb1nzkxckUmuOFPIAY+TXILUlp/i8Lwt+jfcaNQje9SYi4fLGHwEcCvqGxvf5MuNYAmoLFx+/8j1lHqlWlYyCDFEGaksqALo8n+z9Dr8Fyj7nfDk/g3pVvvJpycl8xRSbLDTW7X/QArWLFtOOh4pEhDGsDd756pNFgyg6RAw/yKmHOF4bJth7Yy2y0BjPK360hft7KhtfoHIqVFbwJ+bCGxwtCS+/6Npz68WZpw==",
+        "SigningCertUrl": "https://sns.us-east-1.amazonaws.com/SimpleNotificationService-ac565b8b1a6c5d002d285f9598aa1d9b.pem",
+        "UnsubscribeUrl": "https://sns.us-east-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-1:123456789012:workco-fargate_slack-notifier_production:c455163c-446b-4dbd-8aa3-d8507b004d07",
+        "MessageAttributes": {}
+      }
+    }
+  ]
+}

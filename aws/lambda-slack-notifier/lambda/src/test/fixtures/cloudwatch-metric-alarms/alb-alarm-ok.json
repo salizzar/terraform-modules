@@ -1,0 +1,22 @@
+{
+    "Records": [
+        {
+            "EventSource": "aws:sns",
+            "EventVersion": "1.0",
+            "EventSubscriptionArn": "arn:aws:sns:us-east-1:1234566789012:slack-notifier:de2c263d-19c6-455f-90c2-bfb91c7ceed3",
+            "Sns": {
+                "Type": "Notification",
+                "MessageId": "3846e3ed-45f8-5a44-9d50-b73e0b0f9ebe",
+                "TopicArn": "arn:aws:sns:us-east-1:1234566789012:slack-notifier",
+                "Subject": "OK: \"my-alb_request_count\" in US East (N. Virginia)",
+                "Message": "{\"AlarmName\":\"my-alb_request_count\",\"AlarmDescription\":null,\"AWSAccountId\":\"1234566789012\",\"NewStateValue\":\"OK\",\"NewStateReason\":\"Threshold Crossed: 1 datapoint [0.0 (05/02/19 08:39:00)] was not greater than the threshold (100.0).\",\"StateChangeTime\":\"2019-02-05T08:43:35.139+0000\",\"Region\":\"US East (N. Virginia)\",\"OldStateValue\":\"ALARM\",\"Trigger\":{\"MetricName\":\"RequestCount\",\"Namespace\":\"AWS/ApplicationELB\",\"StatisticType\":\"Statistic\",\"Statistic\":\"SUM\",\"Unit\":null,\"Dimensions\":[{\"value\":\"app/workco-fargate-production/12b6a3f8e95376cf\",\"name\":\"LoadBalancer\"}],\"Period\":60,\"EvaluationPeriods\":1,\"ComparisonOperator\":\"GreaterThanThreshold\",\"Threshold\":100.0,\"TreatMissingData\":\"- TreatMissingData:                    NonBreaching\",\"EvaluateLowSampleCountPercentile\":\"\"}}",
+                "Timestamp": "2019-02-05T08:43:35.147Z",
+                "SignatureVersion": "1",
+                "Signature": "Reb6ywcOQ3s85nmLALcxryZAhfTInQtw4UEiC63m5qBQZLqJwR4YlmbG+4mJdfiakhOm2Ig16KGKB5U3Fa0zjhBkYi5t6yAK23gyod0nutu9O91tuEEnKrP6k3MNTGCtwcuGWIlsvmFhZK9qCAa4RaeOuljcGl+sULDCUZRk0/G+zLBTO+6Z3EXluQ6frg8YqqZgFpBtMVs6rxwgbr5LI4Ld/aqhgaXa007ZT3lUmY2HItBBLA8dxSytqGDbV0kRc8YaHwpZxAGvSDGaw0mHRNEZ2sYXaApx6gP0/fc3Iz8IX5CkB36YaOl0VyC//IUAQqmFsRG8Kv+1TBYywVmMDQ==",
+                "SigningCertUrl": "https://sns.us-east-1.amazonaws.com/SimpleNotificationService-ac565b8b1a6c5d002d285f9598aa1d9b.pem",
+                "UnsubscribeUrl": "https://sns.us-east-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-1:1234566789012:slack-notifier:de2c263d-19c6-455f-90c2-bfb91c7ceed3",
+                "MessageAttributes": {}
+            }
+        }
+    ]
+}

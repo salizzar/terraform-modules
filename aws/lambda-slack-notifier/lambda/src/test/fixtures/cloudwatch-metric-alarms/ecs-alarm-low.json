@@ -1,0 +1,22 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "EventSubscriptionArn": "arn:aws:sns:us-east-1:123456789012:slack-notifier:c455163c-446b-4dbd-8aa3-d8507b004d07",
+      "Sns": {
+        "Type": "Notification",
+        "MessageId": "46a862ae-d6ac-5ca1-bd22-366781d19ac2",
+        "TopicArn": "arn:aws:sns:us-east-1:123456789012:slack-notifier",
+        "Subject": "ALARM: \"my-app_cpu_low\" in US East (N. Virginia)",
+        "Message": "{\"AlarmName\":\"my-app_cpu_low\",\"AlarmDescription\":null,\"AWSAccountId\":\"123456789012\",\"NewStateValue\":\"ALARM\",\"NewStateReason\":\"Threshold Crossed: 2 datapoints [2.9575471732089333 (28/01/19 19:15:00), 1.9353917938881162 (28/01/19 19:14:00)] were less than the threshold (10.0).\",\"StateChangeTime\":\"2019-01-28T19:17:17.115+0000\",\"Region\":\"US East (N. Virginia)\",\"OldStateValue\":\"OK\",\"Trigger\":{\"MetricName\":\"CPUUtilization\",\"Namespace\":\"AWS/ECS\",\"StatisticType\":\"Statistic\",\"Statistic\":\"AVERAGE\",\"Unit\":null,\"Dimensions\":[{\"value\":\"my-app\",\"name\":\"ServiceName\"},{\"value\":\"workco-cluster\",\"name\":\"ClusterName\"}],\"Period\":60,\"EvaluationPeriods\":2,\"ComparisonOperator\":\"LessThanThreshold\",\"Threshold\":10.0,\"TreatMissingData\":\"\",\"EvaluateLowSampleCountPercentile\":\"\"}}",
+        "Timestamp": "2019-01-28T19:17:17.134Z",
+        "SignatureVersion": "1",
+        "Signature": "eLWM92kiiop7RX9rJYaALqIPamoJVjWbPXNO0y4Rd/yFQn8/4AslgXTVaRJry9RHdvNCji6ca5bcii5ytAd77TtmbszX1dW09PLFC+5zkK3ldoKgP4fxEGcFZ64AJYimgeK8OYKO7EzJhKDo0iuJ7e81RN4AeqgjXL7AyafJ88mZo36pCG/nOlwG4XzALeiB3bXbCUYhmhCWJMmeVa83NN1Lbkj3+0chqrrY3qg4qB9uoXeoQ1PAjJT12huhN69fBL6Obx+KlxzSr3QsVm/GuUf2kqos2LGDMYqkpA9AXmKdPivt+gjX9ttZYt8T9LkmzcIa5XwlHbMMVovo010ExA==",
+        "SigningCertUrl": "https://sns.us-east-1.amazonaws.com/SimpleNotificationService-ac565b8b1a6c5d002d285f9598aa1d9b.pem",
+        "UnsubscribeUrl": "https://sns.us-east-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-1:123456789012:slack-notifier:c455163c-446b-4dbd-8aa3-d8507b004d07",
+        "MessageAttributes": {}
+      }
+    }
+  ]
+}
