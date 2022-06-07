@@ -46,6 +46,7 @@ EOF
     "Version": "2012-10-17",
     "Statement": [
         {
+            "Sid": "TraefikDefaultPermissions",
             "Effect": "Allow",
             "Action": [
                 "ecs:DescribeClusters",
@@ -63,6 +64,20 @@ EOF
             "Resource": [
                 "*"
             ]
+        },
+        {
+            "Sid": "TraefikCrossAccount",
+            "Effect": "Allow",
+            "Action": [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:BatchGetImage",
+                "ecr:DescribeImages",
+                "ecr:DescribeRepositories",
+                "ecr:GetAuthorizationToken",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:ListImages"
+            ],
+            "Resource": "*"
         }
     ]
 }
