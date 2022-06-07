@@ -32,6 +32,7 @@ variable "ecs_deployment" {
     cluster = string
     service = string
     profile = string
+    region  = string
   })
 
   default = null

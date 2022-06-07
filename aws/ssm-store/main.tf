@@ -4,7 +4,7 @@ locals {
   application_path        = "${var.aws_ssm_parameter.prefix}/${var.aws_ssm_parameter.application}"
   deletion_window_in_days = lookup(var.aws_kms_key, "deletion_window_in_days", local.default_deletion_window_in_days)
 
-  awscli_profile_args = var.ecs_deployment.profile != null ? format("--profile %s", var.ecs_deployment.profile) : ""
+  awscli_profile_args = var.ecs_deployment != null ? format("--profile %s --region %s", var.ecs_deployment.profile, var.ecs_deployment.region) : ""
 
   additional_tags = {
     Environment = terraform.workspace
