@@ -2,12 +2,13 @@
 
 QUERY=`echo $(</dev/stdin)`
 PROFILE=`echo $QUERY | jq -r .aws_profile`
+AWS_REGION=`echo $QUERY | jq -r .aws_region`
 ECR_REPOSITORY=`echo $QUERY | jq -r .ecr_repository`
 ECR_IMAGE_ID=`echo $QUERY | jq -r .ecr_image_id`
 
 [[ "$PROFILE" != "" ]] && AWS_PROFILE_ARGS="--profile $PROFILE" || AWS_PROFILE_ARGS=""
 
-ECR_REPO_IMAGE=`aws ecr list-images --repository-name $ECR_REPOSITORY $AWS_PROFILE_ARGS | jq -r ".imageIds[] | select(.imageTag==\"$ECR_IMAGE_ID\")"`
+ECR_REPO_IMAGE=`aws ecr list-images --region $AWS_REGION --repository-name $ECR_REPOSITORY $AWS_PROFILE_ARGS | jq -r ".imageIds[] | select(.imageTag==\"$ECR_IMAGE_ID\")"`
 
 if [[ -z $ECR_REPO_IMAGE ]] ; then
   echo '{"error": "image not found"}' 1>&2
