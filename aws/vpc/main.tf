@@ -57,15 +57,18 @@ resource "aws_eip" "eip_nat" {
 resource "aws_route_table" "pub" {
   vpc_id = aws_vpc.vpc.id
 
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.default.id
-  }
-
   tags = merge(
     aws_vpc.vpc.tags,
     { Name = "${aws_vpc.vpc.tags.Name}_rt_pub" }
   )
+}
+
+resource "aws_route" "igw" {
+  depends_on = [aws_route_table.pub]
+
+  route_table_id         = aws_route_table.pub.id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = aws_internet_gateway.default.id
 }
 
 resource "aws_subnet" "pub-dmz" {
@@ -298,19 +301,24 @@ resource "aws_route_table_association" "pub-rds" {
 resource "aws_route_table" "prv" {
   depends_on = [aws_nat_gateway.default]
 
-  vpc_id = aws_vpc.vpc.id
-
   count = length(aws_nat_gateway.default)
 
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = element(aws_nat_gateway.default.*.id, count.index)
-  }
+  vpc_id = aws_vpc.vpc.id
 
   tags = merge(
     aws_vpc.vpc.tags,
     { Name = "${aws_vpc.vpc.tags.Name}_rt_prv" }
   )
+}
+
+resource "aws_route" "nat" {
+  depends_on = [aws_route_table.prv]
+
+  count = length(aws_nat_gateway.default)
+
+  route_table_id         = element(aws_route_table.prv.*.id, count.index)
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id         = element(aws_nat_gateway.default.*.id, count.index)
 }
 
 resource "aws_subnet" "prv-alb" {
