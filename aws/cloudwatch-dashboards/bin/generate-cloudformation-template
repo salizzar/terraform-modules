@@ -12,14 +12,31 @@ CDK_SRC="`pwd`/`dirname $0`/../src"
 CDK_PATH=`sed 's/\ /\\ /g' <<< "$CDK_SRC"`
 
 
-cd "$CDK_PATH" && npm install > /dev/null 2>&1
+#
+# look for npm errors
+#
+NPM_OUTPUT=`cd "$CDK_PATH" && npm install`
+NPM_EXIT_CODE=$?
 
+if [[ $NPM_EXIT_CODE -ne 0 ]] ; then
+  echo "{\"error\":\"$NPM_OUTPUT\"}"
+  exit 1
+fi
+
+
+#
+# look for cdk errors
+#
 CDK_OUTPUT=`cdk synth`
-EXIT_CODE=$?
+CDK_EXIT_CODE=$?
 
-if [[ $EXIT_CODE -ne 0 ]] ; then
+if [[ $CDK_EXIT_CODE -ne 0 ]] ; then
   jq -n --arg cdk_output "$CDK_OUTPUT" '{"error":$cdk_output}' 1>&2
   exit 1
 fi
 
+
+#
+# if everything is OK return CDK output
+#
 jq -n --arg cdk_output "$CDK_OUTPUT" '{"cloudformation_template":$cdk_output}'
