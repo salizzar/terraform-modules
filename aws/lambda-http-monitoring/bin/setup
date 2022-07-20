@@ -9,7 +9,7 @@ LAMBDA_SRC=`echo $QUERY | jq -r .source_path`
 if [[ ! -d $LAMBDA_SRC ]]; then
   GIT_CMD=`git clone $GIT_REPO $LAMBDA_SRC`
 else
-  GIT_CMD=`cd $LAMBDA_SRC ; git pull`
+  GIT_CMD=`cd $LAMBDA_SRC ; git stash ; git pull ; git stash pop`
 fi
 
 jq -n --arg lambda_src "${LAMBDA_SRC}" --arg git_clone "${GIT_CMD}" '{"lambda_src":$lambda_src, "git_clone": $git_clone}'
