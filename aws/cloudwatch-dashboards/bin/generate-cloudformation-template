@@ -8,10 +8,11 @@ set -xe
 # so you need to access the cdk source code folder by this form
 # instead of ../src
 
-CDK_PATH="`pwd`/`dirname $0`/../src"
+CDK_SRC="`pwd`/`dirname $0`/../src"
+CDK_PATH=`sed 's/\ /\\ /g' <<< "$CDK_SRC"`
 
 
-cd $CDK_PATH && npm install > /dev/null 2>&1
+cd "$CDK_PATH" && npm install > /dev/null 2>&1
 
 CDK_OUTPUT=`cdk synth`
 EXIT_CODE=$?
