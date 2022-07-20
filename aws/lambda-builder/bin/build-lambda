@@ -4,11 +4,13 @@ set -xe
 
 QUERY=`echo $(</dev/stdin)`
 
-TERRAFORM_DIR=`echo $QUERY | jq -r .root_folder`
-LAMBDA_SRC=`echo $QUERY | jq -r .lambda_path`
-LAMBDA_PATH=${TERRAFORM_DIR}/${LAMBDA_SRC}
+TERRAFORM_ROOT_FOLDER=`echo $QUERY | jq -r .root_folder`
+TERRAFORM_DIR=`sed 's/\ /\\ /g' <<< "$TERRAFORM_ROOT_FOLDER"`
 
-RESULT=`cd $LAMBDA_PATH && npm install`
+LAMBDA_SRC=`echo $QUERY | jq -r .lambda_path`
+LAMBDA_PATH="${TERRAFORM_DIR}/${LAMBDA_SRC}"
+
+RESULT=`cd "$LAMBDA_PATH" && npm install`
 RESPONSE=`jq -R -s <<< $RESULT`
 
 jq -n --arg response "${RESPONSE}" '{"response":$response}'
