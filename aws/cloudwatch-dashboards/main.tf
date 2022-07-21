@@ -12,13 +12,43 @@ resource "local_file" "payload" {
   file_permission = "444"
 }
 
-data "external" "cdk" {
+data "external" "cdk-bootstrap" {
   depends_on = [local_file.payload]
+
+  program = ["bash", "${path.module}/bin/cdk-bootstrap"]
+
+  query = {
+    profile = var.cloudwatch_dashboards.profile
+  }
+}
+
+data "external" "manifest" {
+  depends_on = [data.external.cdk-bootstrap]
+
+  program = ["bash", "${path.module}/bin/capture-cdk-manifest-attributes"]
+
+  query = {
+    manifest_path = "${path.module}/src/cdk.out/manifest.json"
+  }
+}
+
+data "external" "cdk-cf-template" {
+  depends_on = [data.external.cdk-bootstrap, data.external.manifest]
 
   program = ["bash", "${path.module}/bin/generate-cloudformation-template"]
 }
 
+resource "aws_ssm_parameter" "cdk" {
+  depends_on = [data.external.cdk-cf-template]
+
+  name  = data.external.manifest.result["bootstrapStackVersionSsmParameter"]
+  type  = "String"
+  value = data.external.manifest.result["requiresBootstrapStackVersion"]
+}
+
 resource "aws_cloudformation_stack" "dashboards" {
+  depends_on = [aws_ssm_parameter.cdk]
+
   name          = var.aws_cloudformation_stack.name
-  template_body = data.external.cdk.result["cloudformation_template"]
+  template_body = data.external.cdk-cf-template.result["cloudformation_template"]
 }

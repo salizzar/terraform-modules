@@ -1,10 +1,18 @@
-import * as cdk from '@aws-cdk/core';
-import * as cloudwatch from '@aws-cdk/aws-cloudwatch';
-import {GraphWidget, Metric} from "@aws-cdk/aws-cloudwatch";
+// default from cdk
+import { Stack, StackProps } from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+
+
+// imports from cdk
+import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
+import {GraphWidget} from 'aws-cdk-lib/aws-cloudwatch';
+
+// import payload
 import * as payload from './payload';
 
-export class CloudwatchDashboardsStack extends cdk.Stack {
-  constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
+
+export class CloudwatchDashboardsStack extends Stack {
+  constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
     payload.dashboards.forEach(dashboard => {
@@ -24,13 +32,13 @@ export class CloudwatchDashboardsStack extends cdk.Stack {
     });
   }
 
-  buildCloudwatchWidget(title: string, namespace: string, metricName: string, dimensions: Object, statistic: string): GraphWidget {
+  buildCloudwatchWidget(title: string, namespace: string, metricName: string, dimensions: any, statistic: string): GraphWidget {
     return new GraphWidget({
       title: title,
-      left: [new Metric({
+      left: [new cloudwatch.Metric({
         namespace: namespace,
         metricName: metricName,
-        dimensions: dimensions,
+        dimensionsMap: dimensions,
         statistic: statistic
       })]
     })

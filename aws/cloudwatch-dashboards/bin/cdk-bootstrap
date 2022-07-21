@@ -1,0 +1,45 @@
+#! /usr/bin/env bash
+
+set -xe
+
+QUERY=`echo $(</dev/stdin)`
+PROFILE=`echo $QUERY | jq -r .profile`
+
+
+# IMPORTANT:
+# when this script is invoked, the current path is not accessible in a easy way...
+# so you need to access the cdk source code folder by this form
+# instead of ../src
+
+CDK_SRC="`pwd`/`dirname $0`/../src"
+CDK_PATH=`sed 's/\ /\\ /g' <<< "$CDK_SRC"`
+
+
+cd "$CDK_PATH"
+
+
+#
+# look for npm errors
+#
+NPM_OUTPUT=`npm install`
+NPM_EXIT_CODE=$?
+
+if [[ $NPM_EXIT_CODE -ne 0 ]] ; then
+  echo "{\"error\":\"$NPM_OUTPUT\"}"
+  exit 1
+fi
+
+
+#
+# look for cdk bootstrap errors
+#
+CDK_BOOTSTRAP_OUTPUT=`cdk bootstrap --profile $PROFILE`
+CDK_BOOTSTRAP_EXIT_CODE=$?
+
+
+if [[ $CDK_BOOTSTRAP_EXIT_CODE -ne 0 ]] ; then
+  jq -n --arg cdk_output "$CDK_BOOTSTRAP_OUTPUT" '{"error":$cdk_output}' 1>&2
+  exit 1
+fi
+
+jq -n --arg response "OK" '{"response": $response}'

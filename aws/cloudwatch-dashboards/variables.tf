@@ -1,6 +1,7 @@
 variable "cloudwatch_dashboards" {
   type = object({
     payload = string
+    profile = string
   })
 }
 

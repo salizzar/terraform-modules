@@ -1,0 +1,21 @@
+#! /usr/bin/env bash
+
+set -xe
+
+QUERY=`echo $(</dev/stdin)`
+MANIFEST_PATH=`echo $QUERY | jq -r .manifest_path`
+MANIFEST_JSON=`cat $MANIFEST_PATH`
+
+
+#
+# ATTENTION: potential break if AWS decides to change things here
+#
+BOOTSTRAP_STACK_VERSION_SSM_PARAMETER=`echo $MANIFEST_JSON | jq -r .artifacts.CloudwatchDashboardsStack.properties.bootstrapStackVersionSsmParameter`
+REQUIRES_BOOTSTRAP_STACK_VERSION=`echo $MANIFEST_JSON | jq -r .artifacts.CloudwatchDashboardsStack.properties.bootstrapStackVersionSsmParameter`
+
+
+jq -n \
+  --arg bootstrapStackVersionSsmParameter "$BOOTSTRAP_STACK_VERSION_SSM_PARAMETER" \
+  --arg requiresBootstrapStackVersion "$REQUIRES_BOOTSTRAP_STACK_VERSION" \
+  '{"bootstrapStackVersionSsmParameter": $bootstrapStackVersionSsmParameter, "requiresBootstrapStackVersion": $requiresBootstrapStackVersion}'
+

@@ -2,6 +2,9 @@
 
 set -xe
 
+QUERY=`echo $(</dev/stdin)`
+PROFILE=`echo $QUERY | jq -r .profile`
+
 
 # IMPORTANT:
 # when this script is invoked, the current path is not accessible in a easy way...
@@ -12,31 +15,18 @@ CDK_SRC="`pwd`/`dirname $0`/../src"
 CDK_PATH=`sed 's/\ /\\ /g' <<< "$CDK_SRC"`
 
 
-#
-# look for npm errors
-#
-NPM_OUTPUT=`cd "$CDK_PATH" && npm install`
-NPM_EXIT_CODE=$?
+cd "$CDK_PATH"
 
-if [[ $NPM_EXIT_CODE -ne 0 ]] ; then
-  echo "{\"error\":\"$NPM_OUTPUT\"}"
+
+#
+# generate CDK CloudFormation Template output
+#
+CDK_SYNTH_OUTPUT=`cdk synth`
+CDK_SYNTH_EXIT_CODE=$?
+
+if [[ $CDK_SYNTH_EXIT_CODE -ne 0 ]] ; then
+  jq -n --arg cdk_output "$CDK_SYNTH_OUTPUT" '{"error":$cdk_output}' 1>&2
   exit 1
 fi
 
-
-#
-# look for cdk errors
-#
-CDK_OUTPUT=`cdk synth`
-CDK_EXIT_CODE=$?
-
-if [[ $CDK_EXIT_CODE -ne 0 ]] ; then
-  jq -n --arg cdk_output "$CDK_OUTPUT" '{"error":$cdk_output}' 1>&2
-  exit 1
-fi
-
-
-#
-# if everything is OK return CDK output
-#
-jq -n --arg cdk_output "$CDK_OUTPUT" '{"cloudformation_template":$cdk_output}'
+jq -n --arg cdk_output "$CDK_SYNTH_OUTPUT" '{"cloudformation_template":$cdk_output}'
