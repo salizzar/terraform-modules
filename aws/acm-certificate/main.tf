@@ -7,10 +7,6 @@ locals {
   all_domains       = split(", ", format("%s, %s", local.domain_name, join(", ", local.subject_alternative_names)))
   wildcard_exists   = contains(local.all_domains, local.wildcard_domain_name)
   validation_factor = local.wildcard_exists ? 1 : 0
-
-  additional_tags = {
-    Environment = terraform.workspace
-  }
 }
 
 resource "aws_acm_certificate" "cert" {
@@ -20,7 +16,7 @@ resource "aws_acm_certificate" "cert" {
   subject_alternative_names = length(local.alternative_domain_names) > 0 ? local.alternative_domain_names : null
   validation_method         = "DNS"
 
-  tags = merge(var.aws_acm_certificate.tags, local.additional_tags)
+  tags = var.aws_acm_certificate.tags
 
   lifecycle {
     create_before_destroy = true
