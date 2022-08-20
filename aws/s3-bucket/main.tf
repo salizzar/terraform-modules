@@ -11,6 +11,7 @@ resource "aws_kms_key" "kms-key" {
   description             = var.aws_kms_key.description
   policy                  = data.aws_iam_policy_document.kms-policy.json
   deletion_window_in_days = var.aws_kms_key.deletion_window_in_days
+  enable_key_rotation     = var.aws_kms_key.enable_key_rotation
   tags                    = merge(var.aws_kms_key.tags, local.additional_tags)
 }
 
@@ -43,22 +44,56 @@ resource "aws_s3_bucket" "bucket" {
   lifecycle {
     prevent_destroy = true
   }
+}
 
-  dynamic "server_side_encryption_configuration" {
-    for_each = var.aws_kms_key.enabled ? [1] : []
+resource "aws_s3_bucket_server_side_encryption_configuration" "server-side-encryption" {
+  count = var.aws_s3_bucket_server_side_encryption_configuration.enabled ? 1 : 0
+
+  bucket = aws_s3_bucket.bucket.bucket
+
+  dynamic "rule" {
+    for_each = var.aws_s3_bucket_server_side_encryption_configuration.rules
 
     content {
-      rule {
-        apply_server_side_encryption_by_default {
-          kms_master_key_id = aws_kms_key.kms-key[0].arn
-          sse_algorithm     = "aws:kms"
-        }
+      apply_server_side_encryption_by_default {
+        kms_master_key_id = aws_kms_key.kms-key[0].arn
+        sse_algorithm     = rule.value["sse_algorithm"]
       }
     }
   }
-
-  tags = merge(var.aws_s3_bucket.tags, local.additional_tags)
 }
+
+resource "aws_s3_bucket" "log_bucket" {
+  count = var.aws_s3_log_bucket.enabled ? 1 : 0
+
+  bucket = var.aws_s3_log_bucket.bucket
+
+  versioning {
+    enabled = var.aws_s3_log_bucket.versioning.enabled
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "aws_s3_bucket_logging" "logs" {
+  count = var.aws_s3_log_bucket.enabled ? 1 : 0
+
+  bucket        = aws_s3_bucket.bucket.id
+  target_bucket = aws_s3_bucket.log_bucket[0].id
+  target_prefix = var.aws_s3_bucket_logging.target_prefix
+}
+
+resource "aws_s3_bucket_public_access_block" "log_access" {
+  bucket = aws_s3_bucket.bucket.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
 
 resource "aws_s3_bucket_policy" "policy" {
   count = var.aws_s3_bucket_policy.enabled ? 1 : 0

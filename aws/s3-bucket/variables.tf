@@ -9,6 +9,7 @@ variable "aws_kms_key" {
     enabled                 = bool
     description             = string
     deletion_window_in_days = number
+    enable_key_rotation     = bool
     tags                    = map(string)
   })
 
@@ -16,6 +17,7 @@ variable "aws_kms_key" {
     enabled                 = false
     description             = ""
     deletion_window_in_days = 10
+    enable_key_rotation     = true
     tags                    = {}
   }
 }
@@ -42,6 +44,35 @@ variable "aws_s3_bucket" {
       redirect_all_requests_to = string
       routing_rules            = string
     })
+  })
+}
+
+variable "aws_s3_bucket_server_side_encryption_configuration" {
+  type = object({
+    enabled = bool
+
+    rules = list(object({
+      sse_algorithm = string
+    }))
+  })
+}
+
+variable "aws_s3_log_bucket" {
+  type = object({
+    enabled = bool
+
+    bucket = string
+    acl    = string
+
+    versioning = object({
+      enabled = bool
+    })
+  })
+}
+
+variable "aws_s3_bucket_logging" {
+  type = object({
+    target_prefix = string
   })
 }
 
