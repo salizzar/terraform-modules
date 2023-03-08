@@ -1,0 +1,7 @@
+tmp
+*.bkp
+
+out
+node_modules
+
+aws/cloudwatch-dashboards/src/lib/payload.ts
