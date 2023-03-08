@@ -4,6 +4,12 @@ variable "aws_iam_policy_document" {
   })
 }
 
+
+#
+# kms key
+#
+
+
 variable "aws_kms_key" {
   type = object({
     enabled                 = bool
@@ -28,21 +34,41 @@ variable "aws_kms_alias" {
   })
 }
 
+
+#
+# s3 bucket
+#
+
+
 variable "aws_s3_bucket" {
   type = object({
     bucket = string
-    acl    = string
     tags   = map(string)
+  })
+}
 
-    versioning = object({
-      enabled = bool
+variable "aws_s3_bucket_acl" {
+  type = object({
+    acl = string
+  })
+}
+
+variable "aws_s3_bucket_versioning" {
+  type = object({
+    versioning_configuration = object({
+      status = string
+    })
+  })
+}
+
+variable "aws_s3_bucket_website_configuration" {
+  type = object({
+    index_document = object({
+      suffix = string
     })
 
-    website = object({
-      index_document           = string
-      error_document           = string
-      redirect_all_requests_to = string
-      routing_rules            = string
+    error_document = object({
+      suffix = string
     })
   })
 }
@@ -54,25 +80,6 @@ variable "aws_s3_bucket_server_side_encryption_configuration" {
     rules = list(object({
       sse_algorithm = string
     }))
-  })
-}
-
-variable "aws_s3_log_bucket" {
-  type = object({
-    enabled = bool
-
-    bucket = string
-    acl    = string
-
-    versioning = object({
-      enabled = bool
-    })
-  })
-}
-
-variable "aws_s3_bucket_logging" {
-  type = object({
-    target_prefix = string
   })
 }
 
@@ -103,6 +110,45 @@ variable "aws_s3_bucket_public_access_block" {
     restrict_public_buckets = true
   }
 }
+
+
+#
+# log bucket
+#
+
+
+variable "aws_s3_log_bucket" {
+  type = object({
+    enabled = bool
+    bucket  = string
+    tags    = map(string)
+  })
+}
+
+variable "aws_s3_log_bucket_versioning" {
+  type = object({
+    versioning_configuration = object({
+      status = string
+    })
+  })
+}
+
+variable "aws_s3_log_bucket_acl" {
+  type = object({
+    acl = string
+  })
+}
+
+variable "aws_s3_bucket_logging" {
+  type = object({
+    target_prefix = string
+  })
+}
+
+
+#
+# dynamodb
+#
 
 variable "aws_dynamodb_table" {
   type = object({

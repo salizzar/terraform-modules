@@ -1,9 +1,6 @@
-locals {
-  additional_tags = {
-    Environment = terraform.workspace
-    CreatedBy   = "terraform"
-  }
-}
+#
+# kms key
+#
 
 resource "aws_kms_key" "kms-key" {
   count = var.aws_kms_key.enabled ? 1 : 0
@@ -12,7 +9,7 @@ resource "aws_kms_key" "kms-key" {
   policy                  = data.aws_iam_policy_document.kms-policy.json
   deletion_window_in_days = var.aws_kms_key.deletion_window_in_days
   enable_key_rotation     = var.aws_kms_key.enable_key_rotation
-  tags                    = merge(var.aws_kms_key.tags, local.additional_tags)
+  tags                    = var.aws_kms_key.tags
 }
 
 resource "aws_kms_alias" "alias" {
@@ -22,27 +19,43 @@ resource "aws_kms_alias" "alias" {
   target_key_id = aws_kms_key.kms-key[0].key_id
 }
 
+
+#
+# s3 bucket
+#
+
 resource "aws_s3_bucket" "bucket" {
   bucket = var.aws_s3_bucket.bucket
-  acl    = var.aws_s3_bucket.acl
-
-  versioning {
-    enabled = var.aws_s3_bucket.versioning.enabled
-  }
-
-  dynamic "website" {
-    for_each = var.aws_s3_bucket.website != null ? [1] : []
-
-    content {
-      index_document           = var.aws_s3_bucket.website.index_document
-      error_document           = var.aws_s3_bucket.website.error_document
-      redirect_all_requests_to = var.aws_s3_bucket.website.redirect_all_requests_to
-      routing_rules            = var.aws_s3_bucket.website.routing_rules
-    }
-  }
 
   lifecycle {
     prevent_destroy = true
+  }
+
+  tags = var.aws_s3_bucket.tags
+}
+
+resource "aws_s3_bucket_acl" "bucket_acl" {
+  bucket = aws_s3_bucket.bucket.id
+  acl    = var.aws_s3_bucket_acl.acl
+}
+
+resource "aws_s3_bucket_versioning" "versioning" {
+  bucket = aws_s3_bucket.bucket.id
+
+  versioning_configuration {
+    status = var.aws_s3_bucket_versioning.versioning_configuration.status
+  }
+}
+
+resource "aws_s3_bucket_website_configuration" "website" {
+  bucket = aws_s3_bucket.bucket.id
+
+  index_document {
+    suffix = var.aws_s3_bucket_website_configuration.index_document.suffix
+  }
+
+  error_document {
+    key = var.aws_s3_bucket_website_configuration.error_document.suffix
   }
 }
 
@@ -63,38 +76,6 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "server-side-encry
   }
 }
 
-resource "aws_s3_bucket" "log_bucket" {
-  count = var.aws_s3_log_bucket.enabled ? 1 : 0
-
-  bucket = var.aws_s3_log_bucket.bucket
-
-  versioning {
-    enabled = var.aws_s3_log_bucket.versioning.enabled
-  }
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
-resource "aws_s3_bucket_logging" "logs" {
-  count = var.aws_s3_log_bucket.enabled ? 1 : 0
-
-  bucket        = aws_s3_bucket.bucket.id
-  target_bucket = aws_s3_bucket.log_bucket[0].id
-  target_prefix = var.aws_s3_bucket_logging.target_prefix
-}
-
-resource "aws_s3_bucket_public_access_block" "log_access" {
-  bucket = aws_s3_bucket.bucket.id
-
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
-}
-
-
 resource "aws_s3_bucket_policy" "policy" {
   count = var.aws_s3_bucket_policy.enabled ? 1 : 0
 
@@ -111,6 +92,77 @@ resource "aws_s3_bucket_public_access_block" "access" {
   restrict_public_buckets = var.aws_s3_bucket_public_access_block.restrict_public_buckets
 }
 
+
+#
+# log bucket
+#
+
+
+resource "aws_s3_bucket" "log_bucket" {
+  count = var.aws_s3_log_bucket.enabled ? 1 : 0
+
+  bucket = var.aws_s3_log_bucket.bucket
+
+  lifecycle {
+    prevent_destroy = true
+  }
+
+  tags = var.aws_s3_log_bucket.tags
+}
+
+resource "aws_s3_bucket_versioning" "log_bucket_versioning" {
+  count = var.aws_s3_log_bucket.enabled ? 1 : 0
+
+  bucket = aws_s3_bucket.log_bucket[0].bucket
+
+  versioning_configuration {
+    status = var.aws_s3_log_bucket_versioning.versioning_configuration.status
+  }
+}
+
+resource "aws_s3_bucket_acl" "log_bucket_acl" {
+  count = var.aws_s3_log_bucket.enabled ? 1 : 0
+
+  bucket = aws_s3_bucket.log_bucket[9].bucket
+
+  acl = var.aws_s3_log_bucket_acl.acl
+}
+
+resource "aws_s3_bucket_versioning" "log_versioning" {
+  count = var.aws_s3_log_bucket.enabled ? 1 : 0
+
+  bucket = aws_s3_bucket.log_bucket[0].id
+
+  versioning_configuration {
+    status = var.aws_s3_bucket_versioning.versioning_configuration.status
+  }
+}
+
+resource "aws_s3_bucket_logging" "logs" {
+  count = var.aws_s3_log_bucket.enabled ? 1 : 0
+
+  bucket        = aws_s3_bucket.bucket.id
+  target_bucket = aws_s3_bucket.log_bucket[0].id
+  target_prefix = var.aws_s3_bucket_logging.target_prefix
+}
+
+resource "aws_s3_bucket_public_access_block" "log_access" {
+  count = var.aws_s3_log_bucket.enabled ? 1 : 0
+
+  bucket = aws_s3_bucket.log_bucket[0].id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+
+#
+# dynamodb
+#
+
+
 resource "aws_dynamodb_table" "dynamodb-lock" {
   count = var.aws_dynamodb_table.enabled ? 1 : 0
 
@@ -125,5 +177,5 @@ resource "aws_dynamodb_table" "dynamodb-lock" {
     type = "S"
   }
 
-  tags = merge(var.aws_dynamodb_table.tags, local.additional_tags)
+  tags = var.aws_dynamodb_table.tags
 }
