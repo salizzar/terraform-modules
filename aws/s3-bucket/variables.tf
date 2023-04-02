@@ -68,7 +68,7 @@ variable "aws_s3_bucket_website_configuration" {
     })
 
     error_document = object({
-      suffix = string
+      key = string
     })
   })
 }

@@ -55,7 +55,7 @@ resource "aws_s3_bucket_website_configuration" "website" {
   }
 
   error_document {
-    key = var.aws_s3_bucket_website_configuration.error_document.suffix
+    key = var.aws_s3_bucket_website_configuration.error_document.key
   }
 }
 
